@@ -7,7 +7,10 @@ public class PlayerMove : PlayerBase
     //PlayerMovementControl
     public float speed = 2;
     Rigidbody rb;
-    private float rotationSpeed = 700;
+    public float rotationSpeed = 1000;
+
+    //Actions
+    public bool carryngObjects;
 
 
     private void Start()
@@ -22,7 +25,7 @@ public class PlayerMove : PlayerBase
     }
 
 
-    void PlayerMovement()
+    public Vector3 PlayerMovement()
     {
         float x = Input.GetAxis("Horizontal");
         float z = Input.GetAxis("Vertical");
@@ -30,15 +33,18 @@ public class PlayerMove : PlayerBase
         Vector3 pos = new Vector3(x, 0, z);
         rb.MovePosition(transform.position + pos * Time.deltaTime * speed);
 
-        if(pos != Vector3.zero /* Vector3(0, 0, 0) */)
+        //Rotação do player será travada caso esteja carrengado algum objeto
+        if (!carryngObjects)
         {
-            //RotateTowards(from, to, rotationSpeed)
-            //from = estado atual
-            //to = tecla que esta sendo pressionada (W,A,S,D) indica a direção da rotação
-            transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(pos), rotationSpeed * Time.deltaTime);
+            if (pos != Vector3.zero /* Vector3(0, 0, 0) */)
+            {
+                //from = estado atual
+                //to = tecla que esta sendo pressionada (W,A,S,D) indica a direção da rotação
+                transform.rotation = Quaternion.RotateTowards(transform.rotation, Quaternion.LookRotation(pos), rotationSpeed * Time.deltaTime);
+            }
         }
 
-        
+        return pos;
     }
 
     void PlayerJump()
